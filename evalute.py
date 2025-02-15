@@ -1,13 +1,4 @@
-# /// script
-# requires-python = ">=3.13"
-# dependencies = [
-#     "faker",
-#     "httpx",
-#     "numpy",
-#     "pillow",
-#     "python-dateutil",
-# ]
-# ///
+
 import hashlib
 import httpx
 import json
