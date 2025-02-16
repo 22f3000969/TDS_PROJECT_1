@@ -1,20 +1,24 @@
-# Use an official Python runtime as a parent image
-FROM python:3.10
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the requirements file into the container
-COPY requirements.txt .
+FROM python:3.12-slim-bookworm
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
 
-# Copy the rest of the application files into the container
-COPY . .
+# Download and install uv
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh && rm /uv-installer.sh
 
-# Expose the port the app runs on
-EXPOSE 8000
+# Install FastAPI and Uvicorn
+RUN pip install fastapi uvicorn
 
-# Run the application
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Ensure the installed binary is on the `PATH`
+ENV PATH="/root/.local/bin:$PATH"
+
+# Set up the application directory
+WORKDIR /app
+
+# Copy application files
+COPY * /app
+
+# Explicitly set the correct binary path and use `sh -c`
+CMD ["uv", "run", "app.py"]
+# CMD ["uv", "run", "evalute.py","--email","22f3000969@ds.study.iitm.ac.in"]
